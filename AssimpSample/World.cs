@@ -184,6 +184,10 @@ namespace AssimpSample
             m_scene.Initialize();
             SetupLightning(gl);
             SetupTextures(gl);
+
+            gl.Viewport(0, 0, m_width, m_height);
+
+
         }
 
         /// <summary>
@@ -192,10 +196,11 @@ namespace AssimpSample
         public void Draw(OpenGL gl)
         {  
             gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
+            gl.LoadIdentity();
             gl.Viewport(0, 0, m_width, m_height);
 
             //podesi kameru
-
+            gl.LookAt(0f, 0f, -5f, 0f, 0f, -100f, 0.0f, 1.0f, 0.0f);
 
             //draw floor
             DrawFloor(gl);
@@ -210,6 +215,7 @@ namespace AssimpSample
             gl.Rotate(m_xRotation, 1.0f, 0.0f, 0.0f);
             gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
             m_scene.Draw();
+            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, new float[] { 0f, 20f, -2f });
 
             //ispisi text
             DrawText(gl);
@@ -267,6 +273,16 @@ namespace AssimpSample
 
             float[] pos = { 15f, 10f, -45f, 1.0f };
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_POSITION, pos);
+
+            //reflektor
+            gl.Enable(OpenGL.GL_LIGHTING);
+            gl.Enable(OpenGL.GL_LIGHT1);
+            float[] light1diffuse = new float[] { 1f, 0.0f, 0.5f, 1f };
+            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_DIFFUSE, light1diffuse);
+            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_DIRECTION, new float[] { 0.0f, -1.0f, 0.0f });
+            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_CUTOFF, 35.0f);
+            //gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, new float[] { 0f,5f,-20f});
+
 
             // Ukljuci automatsku normalizaciju nad normalama
             gl.Enable(OpenGL.GL_NORMALIZE);

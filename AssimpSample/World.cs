@@ -39,6 +39,7 @@ namespace AssimpSample
         //animacije
         private bool ballGoingUp;
         private float ballHeight;
+        private float ballRotation;
         private DispatcherTimer timer1;
         private DispatcherTimer timer2;
 
@@ -60,7 +61,7 @@ namespace AssimpSample
         /// <summary>
         ///	 Udaljenost scene od kamere.
         /// </summary>
-        private float m_sceneDistance = 7000.0f;
+        private float m_sceneDistance = 0.0f;
 
         /// <summary>
         ///	 Sirina OpenGL kontrole u pikselima.
@@ -185,7 +186,7 @@ namespace AssimpSample
             SetupTextures(gl);
 
             timer1 = new DispatcherTimer();
-            timer1.Interval = TimeSpan.FromMilliseconds(20);
+            timer1.Interval = TimeSpan.FromMilliseconds(10);
             timer1.Tick += new EventHandler(UpdateAnimation1);
             timer1.Start();
             timer2 = new DispatcherTimer();
@@ -194,6 +195,7 @@ namespace AssimpSample
             timer2.Start();
 
             ballHeight = 0f;
+            ballRotation = 0f;
             ballGoingUp = true;
 
         }
@@ -201,9 +203,11 @@ namespace AssimpSample
         private void UpdateAnimation1(object sender, EventArgs e)
         {
             if (ballGoingUp)
-                ballHeight += 0.01f;
+                ballHeight += 0.02f;
             else
                 ballHeight -= 0.02f;
+
+            ballRotation += 1f;
         }
 
         /// <summary>
@@ -230,9 +234,12 @@ namespace AssimpSample
             //podesi kameru
             gl.LookAt(0f, 0f, -5f, 0f, 0f, -100f, 0.0f, 1.0f, 0.0f);
 
+            //namesti rotacije i zumiranje
             gl.PushMatrix();
             gl.Rotate(m_xRotation, 1.0f, 0.0f, 0.0f);
             gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
+            gl.Translate(0.0f, 0.0f, m_sceneDistance);
+
             //draw floor
             DrawFloor(gl);
 
@@ -241,6 +248,8 @@ namespace AssimpSample
 
             //draw rugby ball
             gl.Translate(0.0f, -2.0f, -20f);
+            gl.Translate(0f, Clamp(ballHeight,0f,2f), 0f);
+            gl.Rotate(ballRotation, 1.0f, 0.0f, 0.0f);
             m_scene.Draw();
             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, new float[] { 0f, 20f, -2f });
 
@@ -251,6 +260,8 @@ namespace AssimpSample
 
             gl.Flush();
         }
+
+
 
         private void SetupTextures(OpenGL gl)
         {
@@ -285,6 +296,10 @@ namespace AssimpSample
                 image.UnlockBits(imageData);
                 image.Dispose();
             }
+        }
+        public static float Clamp(float value, float min, float max)
+        {
+            return (value < min) ? min : (value > max) ? max : value;
         }
 
         private void SetupLightning(OpenGL gl)

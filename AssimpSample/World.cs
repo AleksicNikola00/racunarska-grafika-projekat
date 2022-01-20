@@ -202,6 +202,9 @@ namespace AssimpSample
             //podesi kameru
             gl.LookAt(0f, 0f, -5f, 0f, 0f, -100f, 0.0f, 1.0f, 0.0f);
 
+            gl.PushMatrix();
+            gl.Rotate(m_xRotation, 1.0f, 0.0f, 0.0f);
+            gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
             //draw floor
             DrawFloor(gl);
 
@@ -209,11 +212,7 @@ namespace AssimpSample
             DrawGoal(gl);
 
             //draw rugby ball
-            gl.PushMatrix();
-
             gl.Translate(0.0f, -2.0f, -20f);
-            gl.Rotate(m_xRotation, 1.0f, 0.0f, 0.0f);
-            gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
             m_scene.Draw();
             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, new float[] { 0f, 20f, -2f });
 

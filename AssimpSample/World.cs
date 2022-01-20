@@ -28,11 +28,11 @@ namespace AssimpSample
     {
         #region Atributi
         //ZA 2KT
-        private enum TextureObjects { Grass=0 };
+        private enum TextureObjects { Grass=0,WhitePlastic };
         private readonly int m_textureCount = Enum.GetNames(typeof(TextureObjects)).Length;
         private uint[] m_textures = null;
 
-        private string[] m_textureFiles = {"..//..//Images//grass-texture.jpg"};
+        private string[] m_textureFiles = {"..//..//Images//grass-texture.jpg", "..//..//Images//white-plastic.jpg" };
         /// <summary>
         ///	 Ugao rotacije Meseca
         /// </summary>
@@ -222,7 +222,9 @@ namespace AssimpSample
         private void SetupTextures(OpenGL gl)
         {
             gl.Enable(OpenGL.GL_TEXTURE_2D);
-            gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_ADD);
+            //gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_ADD);
+            //dodato
+            
 
             gl.GenTextures(m_textureCount, m_textures);
             for (int i = 0; i < m_textureCount; ++i)
@@ -288,8 +290,9 @@ namespace AssimpSample
 
         private void DrawGoal(OpenGL gl)
         {
+            gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_MODULATE);
+            gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.WhitePlastic]);
             gl.PushMatrix();
-
             Cylinder cylinder = new Cylinder();
             cylinder.BaseRadius = 0.1;
             cylinder.TopRadius = 0.1;
@@ -324,6 +327,7 @@ namespace AssimpSample
 
         private void DrawFloor(OpenGL gl)
         {
+            gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_ADD);
             gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.Grass]);
             gl.Begin(OpenGL.GL_QUADS);
             gl.Normal(0, 1, 0);

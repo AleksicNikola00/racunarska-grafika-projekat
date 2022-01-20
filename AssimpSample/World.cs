@@ -16,6 +16,7 @@ using SharpGL.SceneGraph.Core;
 using SharpGL;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Windows.Threading;
 
 namespace AssimpSample
 {
@@ -33,15 +34,13 @@ namespace AssimpSample
         private uint[] m_textures = null;
 
         private string[] m_textureFiles = {"..//..//Images//grass-texture.jpg", "..//..//Images//white-plastic.jpg" };
-        /// <summary>
-        ///	 Ugao rotacije Meseca
-        /// </summary>
-        private float m_moonRotation = 0.0f;
 
-        /// <summary>
-        ///	 Ugao rotacije Zemlje
-        /// </summary>
-        private float m_earthRotation = 0.0f;
+
+        //animacije
+        private bool ballGoingUp;
+        private float ballHeight;
+        private DispatcherTimer timer1;
+        private DispatcherTimer timer2;
 
         /// <summary>
         ///	 Scena koja se prikazuje.
@@ -185,9 +184,38 @@ namespace AssimpSample
             SetupLightning(gl);
             SetupTextures(gl);
 
-            gl.Viewport(0, 0, m_width, m_height);
+            timer1 = new DispatcherTimer();
+            timer1.Interval = TimeSpan.FromMilliseconds(20);
+            timer1.Tick += new EventHandler(UpdateAnimation1);
+            timer1.Start();
+            timer2 = new DispatcherTimer();
+            timer2.Interval = TimeSpan.FromSeconds(3f);
+            timer2.Tick += new EventHandler(UpdateAnimation2);
+            timer2.Start();
 
+            ballHeight = 0f;
+            ballGoingUp = true;
 
+        }
+
+        private void UpdateAnimation1(object sender, EventArgs e)
+        {
+            if (ballGoingUp)
+                ballHeight += 0.01f;
+            else
+                ballHeight -= 0.02f;
+        }
+
+        /// <summary>
+        /// Obrće smer pomeranja kocki
+        /// </summary>
+        private void UpdateAnimation2(object sender, EventArgs e)
+        {
+            if (!ballGoingUp)
+            {
+                ballHeight = 0f;
+            }
+            ballGoingUp = !ballGoingUp;
         }
 
         /// <summary>

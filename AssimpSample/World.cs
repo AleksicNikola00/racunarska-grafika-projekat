@@ -329,6 +329,12 @@ namespace AssimpSample
         {
             gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_ADD);
             gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.Grass]);
+
+            gl.MatrixMode(OpenGL.GL_TEXTURE);
+            gl.LoadIdentity();
+            gl.PushMatrix();
+            gl.Scale(10f, 10f, 10f);
+
             gl.Begin(OpenGL.GL_QUADS);
             gl.Normal(0, 1, 0);
             gl.Color(0.1f, 0.9f, 0.1f);
@@ -341,6 +347,9 @@ namespace AssimpSample
             gl.TexCoord(1.0f, 0.0f);
             gl.Vertex(-15f, 0f, -70f);
             gl.End();
+
+            gl.PopMatrix();
+            gl.MatrixMode(OpenGL.GL_MODELVIEW);
         }
 
 

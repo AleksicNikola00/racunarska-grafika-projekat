@@ -54,6 +54,38 @@ namespace AssimpSample
         }
 
         #endregion Konstruktori
+        private float _rotationSpeed;
+        public float RotationSpeed
+        {
+            get { return _rotationSpeed; }
+            set{
+                if (m_world != null)
+                    m_world.RotationSpeed = value;
+                _rotationSpeed = value;
+            }
+        }
+        private float _ballScale;
+        public float BallScale
+        {
+            get { return _ballScale; }
+            set
+            {
+                _ballScale = value;
+                if (m_world != null)
+                    m_world.BallScale = value;
+            }
+        }
+        private float _goalHeight;
+        public float GoalHeight {
+            get {  return _goalHeight; }
+            set
+            {
+                _goalHeight = value;
+                if(m_world!=null)
+                    m_world.GoalHeight = value;
+                Console.WriteLine(value);
+            }
+        }
 
         /// <summary>
         /// Handles the OpenGLDraw event of the openGLControl1 control.
@@ -83,6 +115,7 @@ namespace AssimpSample
         private void openGLControl_Resized(object sender, OpenGLEventArgs args)
         {
             m_world.Resize(args.OpenGL, (int)openGLControl.ActualWidth, (int)openGLControl.ActualHeight);
+  
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -106,6 +139,7 @@ namespace AssimpSample
                 case Key.F: m_world.RotationY += 5.0f; break;
                 case Key.Add: m_world.SceneDistance += 2.0f; break;
                 case Key.Subtract: m_world.SceneDistance -= 2.0f; break;
+                case Key.V: m_world.ShotAnimation(); break;
             }
         }
     }

@@ -32,16 +32,23 @@ namespace AssimpSample
         private enum TextureObjects { Grass=0,WhitePlastic };
         private readonly int m_textureCount = Enum.GetNames(typeof(TextureObjects)).Length;
         private uint[] m_textures = null;
-
         private string[] m_textureFiles = {"..//..//Images//grass-texture.jpg", "..//..//Images//white-plastic.jpg" };
 
+        private bool block;
 
-        //animacije
+
+        //animacija1
         private bool ballGoingUp;
         private float ballHeight;
-        private float ballRotation;
+        private float ballXRotation;
         private DispatcherTimer timer1;
         private DispatcherTimer timer2;
+        private DispatcherTimer shotTimer;
+
+        //animacija2
+        private float ballWidth;
+        private float ballDepth;
+        private bool firstTime;
 
         /// <summary>
         ///	 Scena koja se prikazuje.
@@ -85,6 +92,10 @@ namespace AssimpSample
             get { return m_scene; }
             set { m_scene = value; }
         }
+
+        public float RotationSpeed { get; set; }
+        public float  BallScale{ get; set; }
+        public float GoalHeight { get; set; }
 
         /// <summary>
         ///	 Ugao rotacije sveta oko X ose.
@@ -195,19 +206,31 @@ namespace AssimpSample
             timer2.Start();
 
             ballHeight = 0f;
-            ballRotation = 0f;
+            ballXRotation = 0f;
+            ballWidth = 0f;
+            ballDepth = 0f;
+            BallScale = 1f;
+            RotationSpeed = 1f;
+            GoalHeight = 1f;
             ballGoingUp = true;
+            block = false;
+            firstTime = true;
 
         }
 
         private void UpdateAnimation1(object sender, EventArgs e)
         {
+            if (block)
+            {
+                //ballHeight = 0;
+                return;
+            }
             if (ballGoingUp)
                 ballHeight += 0.02f;
             else
                 ballHeight -= 0.02f;
 
-            ballRotation += 1f;
+            ballXRotation += 1f;
         }
 
         /// <summary>
@@ -215,13 +238,56 @@ namespace AssimpSample
         /// </summary>
         private void UpdateAnimation2(object sender, EventArgs e)
         {
-            if (!ballGoingUp)
+            if (block)
             {
-                ballHeight = 0f;
+                return;
             }
+            if (!ballGoingUp)
+                ballHeight = 0f;
+            
             ballGoingUp = !ballGoingUp;
         }
 
+        public void ShotAnimation()
+        {
+            ballHeight = 0f;
+            ballWidth = 0f;
+            ballDepth = 0f;
+            block = !block;
+            if (!firstTime) return;
+            shotTimer = new DispatcherTimer();
+            shotTimer.Interval = TimeSpan.FromSeconds(0.1f);
+            shotTimer.Tick += new EventHandler(UpdateShotAnimation);
+            shotTimer.Start();
+            firstTime = false;
+        }
+
+        private void UpdateShotAnimation(object sender, EventArgs e)
+        {
+            if (!block)
+                return;
+            if(ballDepth > -24f)
+            {
+                ballHeight += 0.15f;
+                ballWidth -= 0.05f;
+                ballDepth -= 0.3f;
+            }
+            else
+            {
+                ballHeight -= 0.15f;
+                ballWidth += 0.05f;
+                ballDepth -= 0.3f;
+            }
+
+            if(ballDepth < -35f)
+            {
+                ballDepth = 0f;
+                ballWidth = 0f;
+                ballHeight = 0f;
+            }
+
+           
+        }
         /// <summary>
         ///  Iscrtavanje OpenGL kontrole.
         /// </summary>
@@ -248,8 +314,9 @@ namespace AssimpSample
 
             //draw rugby ball
             gl.Translate(0.0f, -2.0f, -20f);
-            gl.Translate(0f, Clamp(ballHeight,0f,2f), 0f);
-            gl.Rotate(ballRotation, 1.0f, 0.0f, 0.0f);
+            gl.Translate(Clamp(ballWidth,-5f,0f), Clamp(ballHeight,0f,16f), Clamp(ballDepth,-40f,0f));
+            gl.Scale(BallScale, BallScale, BallScale);
+            gl.Rotate(ballXRotation*RotationSpeed, 1.0f, 0.0f, 0.0f);
             m_scene.Draw();
             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, new float[] { 0f, 20f, -2f });
 
@@ -354,14 +421,15 @@ namespace AssimpSample
             Cylinder cylinder = new Cylinder();
             cylinder.BaseRadius = 0.1;
             cylinder.TopRadius = 0.1;
-            cylinder.Height = 10;
-
-            gl.Translate(0.0f, 8f, -45f);
+            cylinder.Height = 10 * GoalHeight;
+          
+            gl.Translate(0.0f, 8f + (GoalHeight-1) * 5 , -45f);
             gl.Rotate(90f, 1f, 0f, 0f);
             gl.Color(1f, 1f, 1f);
             cylinder.CreateInContext(gl);
             cylinder.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
 
+            cylinder.Height = 10;
             gl.Translate(-5f, 0f, 0f);
             gl.Rotate(90f, 0f, 1f, 0f);
             //gl.Color(1f, 1f, 0f);

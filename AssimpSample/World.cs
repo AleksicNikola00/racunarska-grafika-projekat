@@ -268,7 +268,7 @@ namespace AssimpSample
                 return;
             if(ballDepth > -24f)
             {
-                ballHeight += 0.15f;
+                ballHeight += 0.15f + (GoalHeight-1)*0.1f;
                 ballWidth -= 0.05f;
                 ballDepth -= 0.3f;
             }
@@ -314,7 +314,7 @@ namespace AssimpSample
 
             //draw rugby ball
             gl.Translate(0.0f, -2.0f, -20f);
-            gl.Translate(Clamp(ballWidth,-5f,0f), Clamp(ballHeight,0f,16f), Clamp(ballDepth,-40f,0f));
+            gl.Translate(Clamp(ballWidth,-5f,0f), Clamp(ballHeight,0f,16f+(GoalHeight-1)*10), Clamp(ballDepth,-40f,0f));
             gl.Scale(BallScale, BallScale, BallScale);
             gl.Rotate(ballXRotation*RotationSpeed, 1.0f, 0.0f, 0.0f);
             m_scene.Draw();

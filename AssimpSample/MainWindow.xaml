@@ -30,15 +30,15 @@
 
             <StackPanel HorizontalAlignment="Center" Width="150px" Grid.Column="0">
                 <Label>Goal height</Label>
-                <Slider Minimum="1" Value="{Binding Path=GoalHeight, Mode=OneWayToSource}" Maximum="3" ></Slider>
+                <Slider x:Name="slider1"  Minimum="1" Value="{Binding Path=GoalHeight, Mode=OneWayToSource}" Maximum="3" ></Slider>
             </StackPanel>
             <StackPanel Width="150px" HorizontalAlignment="Center" Grid.Column="1">
                 <Label>Ball size</Label>
-                <Slider Minimum="1" Maximum="3"  Value="{Binding Path=BallScale, Mode=OneWayToSource}" ></Slider>
+                <Slider x:Name="slider2" Minimum="1" Maximum="3"  Value="{Binding Path=BallScale, Mode=OneWayToSource}" ></Slider>
             </StackPanel>
             <StackPanel Width="150px" HorizontalAlignment="Center" Grid.Column="2">
                 <Label>Ball rotation speed</Label>
-                <Slider Minimum="1" Value="{Binding Path=RotationSpeed, Mode=OneWayToSource}" Maximum="3"></Slider>
+                <Slider x:Name="slider3" Minimum="1" Value="{Binding Path=RotationSpeed, Mode=OneWayToSource}" Maximum="3"></Slider>
             </StackPanel>
         </Grid>
         

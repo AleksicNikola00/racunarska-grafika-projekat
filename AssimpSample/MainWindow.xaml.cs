@@ -40,7 +40,7 @@ namespace AssimpSample
         {
             // Inicijalizacija komponenti
             InitializeComponent();
-
+            block = false;
             // Kreiranje OpenGL sveta
             try
             {
@@ -54,6 +54,11 @@ namespace AssimpSample
         }
 
         #endregion Konstruktori
+
+        private bool block;
+
+        public bool Block { get { return block; } set { block = value; } }
+
         private float _rotationSpeed;
         public float RotationSpeed
         {
@@ -122,24 +127,30 @@ namespace AssimpSample
         {
             switch (e.Key)
             {
-                case Key.F2: this.Close(); break;
+                case Key.F2:  this.Close(); break;
                 case Key.E:
+                    if (block) return;
                     if (m_world.RotationX > -20.0f)
-                    {
                         m_world.RotationX -= 5.0f;
-                    }
+                    
                     break;
                 case Key.D:
-                    if (m_world.RotationX < 90.0f)
-                    {
+                    if (block) return;
+                    if (m_world.RotationX < 90.0f) 
                         m_world.RotationX += 5.0f;
-                    }
+                    
                     break;
-                case Key.S: m_world.RotationY -= 5.0f; break;
-                case Key.F: m_world.RotationY += 5.0f; break;
-                case Key.Add: m_world.SceneDistance += 2.0f; break;
-                case Key.Subtract: m_world.SceneDistance -= 2.0f; break;
-                case Key.V: m_world.ShotAnimation(); break;
+                case Key.S: if (block) return; m_world.RotationY -= 5.0f; break;
+                case Key.F: if (block) return; m_world.RotationY += 5.0f; break;
+                case Key.Add: if (block) return; m_world.SceneDistance += 2.0f; break;
+                case Key.Subtract: if (block) return; m_world.SceneDistance -= 2.0f; break;
+                case Key.V:
+                    slider1.IsEnabled = block;
+                    slider2.IsEnabled = block;
+                    slider3.IsEnabled = block;
+                    block = !block;
+                    m_world.ShotAnimation();
+                    break;
             }
         }
     }
